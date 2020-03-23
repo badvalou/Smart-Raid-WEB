@@ -4,10 +4,10 @@ var mysql = require('mysql');
 
 // mysql db connection
 var connection = mysql.createConnection({
-    host: "localhost",
-    user: "root",
+    host: "",
+    user: "",
     password: "",
-    database: "testnodejs"
+    database: ""
 });
 
 module.exports = connection;
