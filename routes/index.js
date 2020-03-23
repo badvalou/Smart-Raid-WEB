@@ -19,7 +19,7 @@ const SESS_NAME = 'sid';
 
 router.use(session({
     name: SESS_NAME,
-    secret: 'UFydveuyfhbc',
+    secret: '',
     saveUninitialized: false,
     resave: false,
     cookie: {maxAge: 2 * 60 * 60 * 1000, sameSite: true}
