@@ -1,0 +1,38 @@
+doctype html
+html
+    head
+        link(rel='stylesheet', href='/stylesheets/style.css')
+        link(href="https://stackpath.bootstrapcdn.com/bootswatch/4.4.1/flatly/bootstrap.min.css", rel="stylesheet", crossorigin="anonymous")
+        link(href="https://fonts.googleapis.com/icon?family=Material+Icons", rel="stylesheet")
+        link(rel='stylesheet', href='//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css', media='screen')
+        script(src='https://code.jquery.com/jquery-3.4.1.slim.js')
+        script(src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js")
+        script(src='//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js')
+        title Smart-Raid
+    body
+        nav.navbar.navbar-expand-lg.navbar-light.bg-light(style='margin-bottom: 20px;')
+            a.navbar-brand(href='/') Smart-Raid
+            button.navbar-toggler(type='button', data-toggle='collapse', data-target='#navbarColor03', aria-controls='navbarColor03', aria-expanded='false', aria-label='Toggle navigation')
+                span.navbar-toggler-icon
+            #navbarColor03.collapse.navbar-collapse
+                ul.navbar-nav.mr-auto
+                    li.nav-item
+                        a.nav-link(href='/projet') Le projet
+                    li.nav-item.dropdown
+                        a#navbarDropdown.nav-link.dropdown-toggle(href='#', role='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+                            | Course
+                        .dropdown-menu(aria-labelledby='navbarDropdown')
+                            a.dropdown-item(href='course/list') Liste des courses
+                            a.dropdown-item(href='course/stat') Statistiques
+                            .dropdown-divider
+                            a.dropdown-item(href='/profile') Mon compte
+                            a.dropdown-item(href='/profile/photo') Vos photos
+                    li.nav-item
+                        a.nav-link(href='/tag') Suivre une équipe
+                if(!session.userId)
+                    a.nav-link.pull-righ(href='/login') Connexion
+                    a.nav-link.pull-righ(href='/register') Créer un compte
+
+                else
+                    a.nav-link.pull-righ(href='/logout') Se deconnecter
+        block content

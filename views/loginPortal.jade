@@ -1,0 +1,24 @@
+extends layout
+
+block content
+    div.container
+        div.row
+            div.col-4
+            div.col-4(style="box-shadow: 0 0 33px rgba(0, 0, 0, 0.1); padding: 20px;")
+                h3.text-center Connexion
+                h4.text-center Accéder à votre profile
+                if warningMessage
+                    .alert.alert-danger(role='alert')=warningMessage
+                if successMessage
+                    .alert.alert-success(role='alert')=successMessage
+                form(action='/login' method='post')
+                    .form-group
+                        label(for='loginInput') Identifiant :
+                        input#loginInput.form-control(type='text', name='login' aria-describedby='loginHelp', placeholder='Entrer votre mail')
+                        small#loginHelp.form-text.text-muted Entrer votre adresse mail ou votre identifiant
+                    .form-group
+                        label(for='passwordInput') Mot de passe :
+                        input#passwordInput.form-control(type='password', name='password' placeholder='Entrer votre mot de passe')
+                    .text-center
+                        button.btn.btn-primary(type='submit') Se connecter
+            div.col-4

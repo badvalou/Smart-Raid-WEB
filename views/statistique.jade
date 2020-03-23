@@ -1,0 +1,177 @@
+extends layout
+
+block content
+    script(type="text/javascript" src="https://www.gstatic.com/charts/loader.js")
+    script(type='text/javascript').
+
+        google.charts.load("current", {packages:["corechart"]});
+        google.charts.setOnLoadCallback(drawChart);
+        google.charts.setOnLoadCallback(drawVisualization);
+        google.charts.setOnLoadCallback(drawAnnotations);
+
+        google.charts.load('current', {
+            'packages': ['geochart'],
+            'mapsApiKey': 'AIzaSyAPd2hWanO2di4B657h6e5MMwWcTHSq7aI'
+        });
+        google.charts.setOnLoadCallback(drawRegionsMap);
+
+        function drawChart() {
+            var tableauCourse = !{JSON.stringify(chartCourses)};
+
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'course');
+            data.addColumn('number', 'en %');
+
+            for (let i = 0; i < tableauCourse.length; i++) {
+                data.addRow([tableauCourse[i].nom_course, tableauCourse[i].nombre_course]);
+            }
+
+            var options = {
+                title: 'Répartition des courses',
+                legend: 'none',
+                pieSliceText: 'label',
+                slices: {  4: {offset: 0.2},
+                    12: {offset: 0.3},
+                    14: {offset: 0.4},
+                    15: {offset: 0.5},
+                },
+            };
+            var chart = new google.visualization.PieChart(document.getElementById('teamchart'));
+            chart.draw(data, options);
+        }
+
+        var tableauChartDate = null;
+        function drawVisualization() {
+            if(tableauChartDate == null)
+                return;
+
+            var yearSelectorElem = document.getElementById('yearSelector').value;
+            var firstLine = [];
+            var secondLine = [];
+            firstLine[0] = 'Annee';
+            secondLine[0] = ''+yearSelectorElem;
+            for (let i = 0; i < tableauChartDate.length; i++) {
+                firstLine[(i + 1)] = tableauChartDate[i].nom_course;
+                secondLine[(i + 1)] = tableauChartDate[i].nombre_course;
+            }
+
+            var data = google.visualization.arrayToDataTable([
+                firstLine,
+                secondLine
+            ]);
+
+            var options = {
+                title : "Évolution du nombre d'équipes inscrites",
+                vAxis: {title: "Nombre d'équipes"},
+                hAxis: {title: 'Année'},
+                seriesType: 'bars',
+                series: {5: {type: 'line'}},
+                series: {6: {type: 'line'}} };
+            var chart = new google.visualization.ComboChart(document.getElementById('chart_div_year'));
+            chart.draw(data, options);
+        }
+        var tableauVit = !{JSON.stringify(chartVit)};
+        function drawAnnotations() {
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'Categorie');
+            data.addColumn('number', 'km/h');
+
+
+            for (let i = 0; i < tableauVit.length; i++) {
+                data.addRow([tableauVit[i].nom_course, tableauVit[i].moy]);
+            }
+
+
+            var options = {
+                title: 'Vitesse moyenne par catégorie',
+                chartArea: {width: '50%'},
+                annotations: {
+                    alwaysOutside: true,
+                    textStyle: {
+                        fontSize: 12,
+                        auraColor: 'none',
+                        color: '#555'
+                    },
+                    boxStyle: {
+                        stroke: '#ccc',
+                        strokeWidth: 1,
+                        gradient: {
+                            color1: '#f3e5f5',
+                            color2: '#f3e5f5',
+                            x1: '0%', y1: '0%',
+                            x2: '100%', y2: '100%'
+                        }
+                    }
+                },
+                hAxis: {
+                    title: 'km/h',
+                    minValue: 0,
+                },
+                vAxis: {
+                    title: 'Catégorie'
+                }
+            };
+            var chart = new google.visualization.BarChart(document.getElementById('chart_vitmoy'));
+            chart.draw(data, options);
+        }
+
+        function drawRegionsMap() {
+            var tableauMap = !{JSON.stringify(map)};
+
+
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'Pays');
+            data.addColumn('number', 'courses');
+
+
+            for (let i = 0; i < tableauMap.length; i++) {
+                data.addRow([tableauMap[i].country, tableauMap[i].nombre]);
+            }
+
+            var options = {
+                colorAxis: {colors: ['orange', 'red']}
+            };
+
+            var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
+            chart.draw(data, options);
+        }
+
+        function changeDate() {
+            var yearSelectorElem = document.getElementById('yearSelector');
+            fetch("/annotations-year/" + yearSelectorElem.value, {method: 'GET'})
+                .then(function (responce) {
+
+                    return responce.json();
+                })
+                .then(function (data) {
+                    tableauChartDate = data;
+                    google.charts.setOnLoadCallback(drawVisualization);
+                })
+                .catch(function (error) {
+                   alert("Impossible d'actualiser le graphique : " + error)
+                });
+        }
+
+        window.addEventListener('DOMContentLoaded', function (evt) {
+            changeDate()
+        })
+
+    section(style='margin-top : 10%;')#chart
+        .container(style='box-shadow: 0 0 33px rgba(0, 0, 0, 0.1);')
+            .row
+                .col-4
+                    div#teamchart(style='style="width: 1260px; height: 700px;')
+                .col-4
+                    div#chart_div_year(style='style="width: 1260px; height: 700px;')
+                .col-4
+                    div#chart_vitmoy(style='style="width: 1260px; height: 700px;')
+            .row
+                .col-4
+                .col-4.text-center
+                    .form-group
+                        select.form-control#yearSelector(onchange="changeDate()")
+                            option 2019
+                            option 2020
+    section(style='margin-top: 5%;')#map
+        .container
+            div#regions_div(style='style="width: 1260px; height: 700px;')

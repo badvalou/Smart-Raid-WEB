@@ -1,0 +1,55 @@
+extends layout
+
+block content
+    div.container
+        div.row
+            div.col-4
+            div.col-4(style="box-shadow: 0 0 33px rgba(0, 0, 0, 0.1); padding: 20px;")
+                h3.text-center Créer un compte
+                if warningMessage
+                    .alert.alert-danger(role='alert')=warningMessage
+                .alert.alert-danger#warningMessage(role='alert')
+                form.validatedForm(action='/register' method='post')
+                    .form-group
+                        label(for='loginInput') Identifiant :
+                        input#loginInput.form-control(type='text', name='login' aria-describedby='loginHelp', placeholder='Entrer votre mail' required)
+                        small#loginHelp.form-text.text-muted Entrer votre adresse mail
+                    .row
+                        .col-6
+                            .form-group
+                                label(for='name') Nom
+                                input#name.form-control(type='text', name='name' placeholder='Entrer votre nom' required)
+                        .col-6
+                            .form-group
+                                label(for='surname') Prenom
+                                input#surname.form-control(type='text', name='surname' placeholder='Entrer votre prenom' required)
+                    .form-group
+                        label(for='password') Mot de passe :
+                        input#password.form-control(type='password', name='password' placeholder='Entrer votre mot de passe' required)
+                    .form-group
+                        label(for='passwordValid') Repeter le mot de passe
+                        input#passwordValid.form-control(type='password', name='password_confirm' placeholder='Repeter le mot de passe' required)
+                    .text-center
+                        button#createButton.btn.btn-primary(type='submit') Créer le compte
+            div.col-4
+    script.
+        $("#warningMessage").hide();
+
+        $("#password").change(function () {
+            valid();
+        });
+        $("#passwordValid").change(function () {
+            valid();
+        });
+
+        function valid() {
+            if(jQuery.isEmptyObject($('#passwordValid').val())) {
+                return;
+            }
+            if ($("#password").val() != $("#passwordValid").val()) {
+                $("#warningMessage").show();
+                $("#warningMessage").html("Mot de passe differents");
+            } else {
+                $("#warningMessage").hide();
+            }
+        }

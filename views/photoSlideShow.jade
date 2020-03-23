@@ -1,0 +1,52 @@
+extends layout
+
+block content
+    style.
+        .thumb {
+            margin-bottom: 30px;
+        }
+
+        .page-top {
+            margin-top: 85px;
+        }
+
+        img.zoom {
+            width: 100%;
+            height: 200px;
+            border-radius: 5px;
+            object-fit: cover;
+            -webkit-transition: all .3s ease-in-out;
+            -moz-transition: all .3s ease-in-out;
+            -o-transition: all .3s ease-in-out;
+            -ms-transition: all .3s ease-in-out;
+        }
+
+        .transition {
+            -webkit-transform: scale(1.2);
+            -moz-transform: scale(1.2);
+            -o-transform: scale(1.2);
+            transform: scale(1.2);
+        }
+
+    script.
+        $(document).ready(function () {
+            $(".fancybox").fancybox({
+                openEffect: "none",
+                closeEffect: "none"
+            });
+            $(".zoom").hover(function () {
+                $(this).addClass('transition');
+            }, function () {
+                $(this).removeClass('transition');
+            });
+        });
+
+    if photoList.length == 0
+        .container
+            .alert.alert-warning(role='alert') Aucune photo en ligne, ajouter en depuis l'application
+    .container.page-top
+        .row
+            each photo in photoList
+                .col-lg-3.col-md-4.col-xs-6.thumb
+                    a.fancybox(href='#{photo.uri}', rel='ligthbox')
+                        img.zoom.img-fluid(src='#{photo.uri}', alt='')

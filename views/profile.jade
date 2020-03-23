@@ -1,0 +1,129 @@
+extends layout
+
+block content
+    if uidStatus == 'false'
+        p Erreur lors du chargement de la page
+
+    section#title
+        .text-center
+            h3 Tableau de bord
+    .container
+        .row.justify-content-center
+            .col-3(style='box-shadow: 0 0 33px rgba(0, 0, 0, 0.1);')
+                .text-center
+                    h2
+                    | Profil
+                    button.btn.btn-dark.btn-sm.mx-1(type='button', data-toggle='modal', data-target='#profileModal')
+                        i.material-icons create
+                p Prenom : #{user.prenom}
+                p Nom : #{user.nom}
+                p mail : #{user.mail}
+                p Inscription : #{user.inscription}
+
+            .col-4(style='box-shadow: 0 0 33px rgba(0, 0, 0, 0.1); margin-left: 10px;')
+                .text-center
+                    h2
+                    | Liste de vos courses
+                ul
+                    each userCourse in userCourseList
+                        li
+                            | #{userCourse.nom} (uid : #{userCourse.course_id})
+                            a(href='#').btn.text-secondary
+                                i.material-icons link
+                    li
+                        | #{' '}
+                        button.btn.btn-dark.btn-sm(type='button', data-toggle='modal', data-target='#addCourseModal') Ajouter une course
+            .col-3(style='box-shadow: 0 0 33px rgba(0, 0, 0, 0.1); margin-left: 10px;')
+                .text-center
+                    h2
+                    | Derniere mise a jour
+                - var countLocation = 0;
+                each location in userBadgeLocation
+                    if(countLocation <= 4)
+                        - countLocation++
+                        p
+                            span.badge.badge-primary Position
+                            | #{new Date(location.epoch_time * 1000).toLocaleDateString()} #{location.country}
+
+    #profileModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='profileTitleModal', aria-hidden='true')
+        .modal-dialog(role='document')
+            .modal-content
+                .modal-header
+                    h5#profileTitleModal.modal-title Modifier votre profil
+                    button.close(type='button', data-dismiss='modal', aria-label='Close')
+                        span(aria-hidden='true') ×
+                .modal-body
+                    label(for='mail-profile') Mail :
+                    .input-group.mb-3
+                        .input-group-prepend
+                            span#mailAddon.input-group-text #{user.mail}
+                        input#mail-profile.form-control(type="email" pattern="[^ @]*@[^ @]*" aria-labelledby='mailAddon')
+                    label(for='surname-profile') Prenom :
+                        .input-group.mb-3
+                            .input-group-prepend
+                                span#surnameSpan.input-group-text #{user.prenom}
+                            input#surname-profile.form-control(type="text" aria-labelledby='surnameSpan')
+                    label(for='name-profile') Nom :
+                        .input-group.mb-3
+                            .input-group-prepend
+                                span#nameSpan.input-group-text #{user.nom}
+                            input#name-profile.form-control(type="text" aria-labelledby='nameSpan')
+                .modal-footer
+                    button.btn.btn-primary(type='button' data-dismiss='modal', aria-label='Close' onclick="editProfile()") Sauvegarder
+
+    #addCourseModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='addCourseTitle', aria-hidden='true')
+        .modal-dialog(role='document')
+            .modal-content
+                .modal-header
+                    h5#addCourseTitle.modal-title Ajouter une course
+                    button.close(type='button', data-dismiss='modal', aria-label='Close')
+                        span(aria-hidden='true') ×
+                .modal-body
+                    select.form-control#courseSelector
+                        each course in courseList
+                            option=course.nom
+                .modal-footer
+                    button.btn.btn-primary(type='button' data-dismiss='modal', aria-label='Close' onclick="addCourse()") Ajouter
+
+    script.
+        function editProfile() {
+            if (document.getElementById('mail-profile').value != '') {
+                fetch("/profile/edit/mail/" + document.getElementById('mail-profile').value, {method: 'POST'}).then(function (response) {
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            }
+
+            if (document.getElementById('surname-profile').value != '') {
+                fetch("/profile/edit/surname/" + document.getElementById('surname-profile').value, {method: 'POST'}).then(function (response) {
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            }
+
+            if (document.getElementById('name-profile').value != '') {
+                fetch("/profile/edit/name/" + document.getElementById('name-profile').value, {method: 'POST'}).then(function (response) {
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            }
+        }
+
+        function addCourse() {
+            var courseList = !{JSON.stringify(courseList)};
+            var optionName = document.getElementById('courseSelector');
+            var courseId = -1;
+            for (var i = 0; i < courseList.length; i++) {
+                if ((courseList[i].nom.toString().toLowerCase().trim()) == (optionName.value.toString().toLowerCase().trim())) {
+                    courseId = courseList[i].type_course_id;
+                }
+            }
+            if (courseId == -1) {
+                alert("Une erreur est survenue lors de la création d'une course");
+            } else {
+                fetch("/profile/add/" + courseId, {method: 'POST'}).then(function (response) {
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            }
+        }

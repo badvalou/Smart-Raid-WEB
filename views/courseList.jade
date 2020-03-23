@@ -1,0 +1,17 @@
+extends layout
+
+block content
+    .list_course
+        .container
+            .row
+                mixin display(course)
+                    .col-4
+                        .card(style="with: 100%")
+                            .card-img
+                            img(src=course.uri).card-img-top.img-fluid
+                            .card-body
+                                h3.card-title=course.nom
+                                h6.card-subtitle.mb-2-text-muted=course.description
+                                a.card-link(href="#") En savoir plus
+                each course in courses
+                    +display(course)

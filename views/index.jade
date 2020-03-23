@@ -1,0 +1,40 @@
+extends layout
+
+block content
+    style.
+        .thumb {
+            margin-bottom: 30px;
+        }
+
+        .page-top {
+            margin-top: 85px;
+        }
+
+        img.zoom {
+            width: 100%;
+            height: 200px;
+            border-radius: 5px;
+            object-fit: cover;
+            -webkit-transition: all .3s ease-in-out;
+            -moz-transition: all .3s ease-in-out;
+            -o-transition: all .3s ease-in-out;
+            -ms-transition: all .3s ease-in-out;
+        }
+
+    script.
+        $(document).ready(function () {
+            $(".fancybox").fancybox({
+                openEffect: "none",
+                closeEffect: "none"
+            });
+        });
+
+    .container.page-top
+        h3 Flux principal
+        .row
+            each photo in photoList
+                .col-lg-3.col-md-4.col-xs-6.thumb
+                    a.fancybox(href='#{photo.uri}', rel='ligthbox')
+                        img.zoom.img-fluid(src='#{photo.uri}', alt='')
+                    h5 #{photo.name}
+                    p Par #{photo.prenom} #{photo.nom} le #{new Date(Date.parse(photo.photo_date)).toLocaleDateString()}

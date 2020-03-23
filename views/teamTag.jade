@@ -1,0 +1,117 @@
+extends layout
+
+block content
+    if(information)
+        p=information
+
+    if(team)
+        .container
+            h3 Entrer l'identifiant de l'équipe :
+            .text-center
+                .row
+                    .col-8
+                        form(action='/tag/search_query' method='post')
+                            .input-group.mb-3
+                                .input-group-prepend
+                                    span#basic-addon1.input-group-text @
+                                input.form-control(type='text', placeholder="ID de l'équipe", aria-label='teamID', aria-describedby='basic-addon1' name='id')
+                            button.btn.btn-primary(type='submit') Recherher
+
+    else
+        .container
+            .row
+                form(action='/tag/unfollow' method='post')
+                    button.btn.btn-dark Ne plus suivre (course n°#{name})
+            .row
+                .col-6
+                    ul.list-group.list-group-flush#messageList
+                        for message in messages.reverse().slice(0,5)
+                            li.list-group-item #{new Date(Date.parse(message.message_time)).toLocaleDateString()} #{message.contenu}
+                    button.btn.btn-dark(onClick='display()' style='margin: 20px;')#dispButton Voir plus
+                    script(type='text/javascript').
+                        function display() {
+                            var messageList = !{JSON.stringify(messages)};
+                            var reserveList = messageList.reverse();
+                            var ulElement = document.getElementById("messageList");
+                            var currentSize = (ulElement.getElementsByTagName("li").length) - 1;
+                            if (messageList.length > currentSize) {
+                                var message = reserveList[currentSize];
+                                var li = document.createElement("li");
+                                li.className = "list-group-item";
+                                li.innerHTML = new Date(Date.parse(message.message_time)).toLocaleDateString() + " " + message.contenu;
+                                ulElement.appendChild(li);
+                            } else {
+                                document.getElementById('dispButton').style.display = 'none';
+                            }
+                        }
+                .col-6
+                    #map_div(style='margin: 20px;')
+
+                    script(type='text/javascript', src='https://www.gstatic.com/charts/loader.js')
+                    script(type='text/javascript').
+                        google.charts.load("current", {
+                            "packages": ["map"],
+                            "mapsApiKey": "AIzaSyAPd2hWanO2di4B657h6e5MMwWcTHSq7aI"
+                        });
+                        google.charts.setOnLoadCallback(drawChart);
+                        function drawChart() {
+                            var tableauMap = !{JSON.stringify(locations)};
+
+                            var data = new google.visualization.DataTable();
+                            data.addColumn('number', 'Lat');
+                            data.addColumn('number', 'Long');
+                            data.addColumn('string', 'Name');
+
+                            for (let i = 0; i < tableauMap.length; i++) {
+                                data.addRow([tableauMap[i].latitude, tableauMap[i].longitude, ""]);
+                            }
+
+                            var map = new google.visualization.Map(document.getElementById('map_div'));
+                            map.draw(data, {
+                                showTooltip: true,
+                                showInfoWindow: true
+                            });
+                        }
+            .row
+                style.
+                    .thumb {
+                        margin-bottom: 30px;
+                    }
+
+                    .page-top {
+                        margin-top: 85px;
+                    }
+
+                    img.zoom {
+                        width: 100%;
+                        height: 200px;
+                        border-radius: 5px;
+                        object-fit: cover;
+                        -webkit-transition: all .3s ease-in-out;
+                        -moz-transition: all .3s ease-in-out;
+                        -o-transition: all .3s ease-in-out;
+                        -ms-transition: all .3s ease-in-out;
+                    }
+
+                    .transition {
+                        -webkit-transform: scale(1.2);
+                        -moz-transform: scale(1.2);
+                        -o-transform: scale(1.2);
+                        transform: scale(1.2);
+                    }
+                script.
+                    $(document).ready(function () {
+                        $(".fancybox").fancybox({
+                            openEffect: "none",
+                            closeEffect: "none"
+                        });
+                        $(".zoom").hover(function () {
+                            $(this).addClass('transition');
+                        }, function () {
+                            $(this).removeClass('transition');
+                        });
+                    });
+                each photo in photos
+                    .col-lg-3.col-md-4.col-xs-6.thumb
+                        a.fancybox(href='#{photo.uri}', rel='ligthbox')
+                            img.zoom.img-fluid(src='#{photo.uri}', alt='')
