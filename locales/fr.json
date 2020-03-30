@@ -1,0 +1,18 @@
+{
+  "Languages": "Langue",
+  "lang": "Langue : Français",
+  "fr": "Francais",
+  "title_main_flux": "Flux principal",
+  "create_by": "par",
+  "at": "le",
+  "project": "Le projet",
+  "race": "Course",
+  "list_race": "Liste des courses",
+  "stat": "Statistiques",
+  "account": "Mon compte",
+  "my_photos": "Vos photos",
+  "folow_team": "Suivre une équipe",
+  "login": "Connexion",
+  "register": "Créer un compte",
+  "logout": "Se deconnecter"
+}

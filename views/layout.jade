@@ -17,22 +17,32 @@ html
             #navbarColor03.collapse.navbar-collapse
                 ul.navbar-nav.mr-auto
                     li.nav-item
-                        a.nav-link(href='/projet') Le projet
+                        a.nav-link(href='/projet') #{__('project')}
                     li.nav-item.dropdown
                         a#navbarDropdown.nav-link.dropdown-toggle(href='#', role='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
-                            | Course
+                            | #{__('race')}
                         .dropdown-menu(aria-labelledby='navbarDropdown')
-                            a.dropdown-item(href='course/list') Liste des courses
-                            a.dropdown-item(href='course/stat') Statistiques
+                            a.dropdown-item(href='course/list') #{__('list_race')}
+                            a.dropdown-item(href='course/stat') #{__('stat')}
                             .dropdown-divider
-                            a.dropdown-item(href='/profile') Mon compte
-                            a.dropdown-item(href='/profile/photo') Vos photos
+                            a.dropdown-item(href='/profile') #{__('account')}
+                            a.dropdown-item(href='/profile/photo') #{__('my_photos')}
                     li.nav-item
-                        a.nav-link(href='/tag') Suivre une équipe
+                        a.nav-link(href='/tag') #{__('folow_team')}
+                    .nav-item.dropdown
+                        section
+                            a#nabvarDropdownLanguage.nav-link.dropdown-toggle(href='#', role='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+                                | #{__('Languages')}
+                            #drp2s.dropdown-menu(aria-labelledby='nabvarDropdownLanguage')
+                                p.dropdown-item #{__('lang')}
+                                each locale in getLocales()
+                                    a.dropdown-item(href='/lang/#{locale}')=locale
                 if(!session.userId)
-                    a.nav-link.pull-righ(href='/login') Connexion
-                    a.nav-link.pull-righ(href='/register') Créer un compte
+                    a.nav-link.pull-righ(href='/login') #{__('login')}
+                    a.nav-link.pull-righ(href='/register') #{__('register')}
 
                 else
-                    a.nav-link.pull-righ(href='/logout') Se deconnecter
+                    a.nav-link.pull-righ(href='/logout') #{__('logout')}
         block content
+
+
