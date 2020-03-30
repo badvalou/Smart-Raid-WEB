@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Smart-raid</string>
+    <string name="action_settings">Settings</string>
+    <string name="login_user">Utilisateur</string>
+    <string name="login_password">Mot de passe</string>
+    <string name="maj">Maj</string>
+    <string name="title_activity_maps_user">Map</string>
+</resources>
