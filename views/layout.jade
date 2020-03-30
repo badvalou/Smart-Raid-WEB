@@ -35,13 +35,13 @@ html
                                 | #{__('Languages')}
                             #drp2s.dropdown-menu(aria-labelledby='nabvarDropdownLanguage')
                                 p.dropdown-item #{__('lang')}
-                                each locale in getLocales()
+                                each locale in getLocales() // liste des langues comptatibles
                                     a.dropdown-item(href='/lang/#{locale}')=locale
-                if(!session.userId)
+                if(!session.userId) // si l'user n'est pas login
                     a.nav-link.pull-righ(href='/login') #{__('login')}
                     a.nav-link.pull-righ(href='/register') #{__('register')}
 
-                else
+                else // affichage du bouton de deco
                     a.nav-link.pull-righ(href='/logout') #{__('logout')}
         block content
 
