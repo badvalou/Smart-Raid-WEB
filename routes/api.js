@@ -174,8 +174,6 @@ app.post('/insert/image/', upload.single('myFile'), (req, res, next) => {
 
 });*/
 
-
-
 app.get('/profile/:id/all/', (req, res) => {
     let user_id = req.params.id;
     con.query('SELECT id,uid,nom,prenom,password FROM Utilisateur WHERE id=?', [user_id], function (error, result) {

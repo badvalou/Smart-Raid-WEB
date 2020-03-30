@@ -30,11 +30,11 @@ block content
         });
 
     .container.page-top
-        h3 Flux principal
+        h3 #{__('title_main_flux')}
         .row
             each photo in photoList
                 .col-lg-3.col-md-4.col-xs-6.thumb
                     a.fancybox(href='#{photo.uri}', rel='ligthbox')
                         img.zoom.img-fluid(src='#{photo.uri}', alt='')
                     h5 #{photo.name}
-                    p Par #{photo.prenom} #{photo.nom} le #{new Date(Date.parse(photo.photo_date)).toLocaleDateString()}
+                    p #{__("create_by")} #{photo.prenom} #{photo.nom} #{__("at")} #{new Date(Date.parse(photo.photo_date)).toLocaleDateString()}

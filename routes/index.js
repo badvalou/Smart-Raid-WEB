@@ -2,23 +2,15 @@ const express = require('express');
 const mysql = require('mysql');
 const crypto = require('crypto');
 const uuid = require('uuid');
-const session = require('express-session');
 let router = express.Router();
 var sql = require('./db.js');
+const session = require('express-session');
 
 String.prototype.isEmpty = function () {
     return (this.length === 0 || !this.trim());
 };
 
-/**
- * SESSION
- *
- */
-const SESS_NAME = 'sid';
-
-
 router.use(session({
-    name: SESS_NAME,
     secret: '',
     saveUninitialized: false,
     resave: false,
@@ -55,11 +47,15 @@ function checkHashPassword(userPassword, salt) {
 
 
 router.get('/', function (req, res) {
+    if(req.cookies.i18n) {
+        setLocale(req.cookies.i18n);
+    }
     let photoUser = "SELECT Photo.uri,Photo.name,Photo.photo_date,Utilisateur.nom,Utilisateur.prenom FROM Photo JOIN course ON Photo.course_id = course.course_id JOIN Utilisateur ON Utilisateur.id = course.user_id WHERE public = 1";
     sql.query(photoUser, function (error, photoResult) {
         res.render('index', {photoList: photoResult});
     });
     loadCourse();
+
 });
 
 router.get('/projet', function (req, res) {
@@ -73,6 +69,15 @@ router.get('/login', function (req, res) {
 router.get('/register', function (req, res) {
     res.render('register');
 });
+
+router.get('/lang/:lang', function (req, res) {
+
+    res.cookie('i18n', req.params.lang);
+    res.redirect("/");
+
+
+});
+
 
 router.post('/register', function (req, res) {
     var login = req.body.login;
@@ -165,7 +170,7 @@ router.get('/logout', function (req, res) {
         }
     });
 
-    res.clearCookie(SESS_NAME);
+    res.clearCookie();
     res.redirect('/login');
 });
 
@@ -183,7 +188,6 @@ function loadCourse() {
         jsonResultCourse = resultCourse;
     });
 }
-
 
 
 module.exports = router;
